@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Organigrama — Radice S.A.</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #e8cc80;
+    --gold-dim: #7a6128;
+    --dark: #0d0c0a;
+    --dark-2: #161410;
+    --dark-3: #1e1b14;
+    --cream: #f5f0e8;
+    --cream-dim: #c8c0a8;
+    --line: rgba(201,168,76,0.35);
+  }
+
+  body {
+    background: var(--dark);
+    font-family: 'Josefin Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 24px 64px;
+    overflow-x: hidden;
+  }
+
+  /* ── Grain overlay ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+    opacity: .45;
+  }
+
+  /* ── Header ── */
+  header {
+    text-align: center;
+    margin-bottom: 56px;
+    position: relative; z-index: 1;
+    animation: fadeDown .8s ease both;
+  }
+
+  .logo-rule {
+    display: flex; align-items: center; gap: 16px;
+    justify-content: center; margin-bottom: 10px;
+  }
+  .logo-rule span { height: 1px; width: 80px; background: var(--gold); opacity: .6; }
+
+  .company-label {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 11px; letter-spacing: 6px;
+    color: var(--gold); text-transform: uppercase; font-weight: 600;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(38px, 7vw, 68px);
+    font-weight: 300; color: var(--cream);
+    letter-spacing: 2px; line-height: 1;
+  }
+  h1 strong { font-weight: 700; color: var(--gold-light); }
+
+  .subtitle {
+    margin-top: 10px;
+    font-size: 11px; letter-spacing: 4px;
+    color: var(--cream-dim); text-transform: uppercase;
+  }
+
+  /* ── Chart container ── */
+  .chart {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0; position: relative; z-index: 1; width: 100%; max-width: 900px;
+  }
+
+  /* ── Nodes ── */
+  .node {
+    position: relative;
+    animation: fadeUp .7s ease both;
+  }
+
+  .node-box {
+    border: 1px solid var(--gold);
+    background: linear-gradient(135deg, #1e1a10 0%, #141208 60%, #1a1709 100%);
+    padding: 18px 32px;
+    text-align: center;
+    position: relative;
+    clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+    transition: transform .25s, box-shadow .25s;
+  }
+  .node-box:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(201,168,76,.25); }
+
+  .node-box::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,.12), transparent 50%);
+    pointer-events: none;
+  }
+
+  /* CEO node */
+  .node--ceo .node-box {
+    padding: 22px 60px;
+    border-color: var(--gold-light);
+    background: linear-gradient(135deg, #2a2210 0%, #1a1608 100%);
+    clip-path: polygon(16px 0%, 100% 0%, calc(100% - 16px) 100%, 0% 100%);
+  }
+  .node--ceo .node-box::after {
+    content: '';
+    position: absolute; inset: 3px;
+    border: 1px solid rgba(201,168,76,.2);
+    clip-path: polygon(13px 0%, 100% 0%, calc(100% - 13px) 100%, 0% 100%);
+    pointer-events: none;
+  }
+
+  .node-icon {
+    font-size: 20px; margin-bottom: 6px; display: block;
+    filter: drop-shadow(0 0 8px rgba(201,168,76,.6));
+  }
+  .node--ceo .node-icon { font-size: 26px; }
+
+  .node-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--gold); font-weight: 600; margin-bottom: 4px;
+  }
+  .node-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(18px, 3vw, 26px); font-weight: 700;
+    color: var(--cream); letter-spacing: 1px;
+  }
+  .node--ceo .node-name { font-size: clamp(22px, 4vw, 34px); color: var(--gold-light); }
+
+  .node-desc {
+    font-size: 10px; letter-spacing: 2px; color: var(--cream-dim);
+    margin-top: 3px; text-transform: uppercase;
+  }
+
+  /* ── Connectors ── */
+  .connector-v {
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, var(--gold), rgba(201,168,76,.3));
+    position: relative; margin: 0 auto;
+  }
+  .connector-v::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--gold); box-shadow: 0 0 8px var(--gold);
+  }
+
+  /* ── Row of area nodes ── */
+  .areas-row {
+    display: flex; gap: 0; align-items: flex-start;
+    width: 100%;
+    animation: fadeUp .7s .3s ease both;
+    opacity: 0;
+    animation-fill-mode: both;
+  }
+
+  /* H-connector spanning the row */
+  .h-line-wrap {
+    position: relative; width: 100%; display: flex; justify-content: center;
+    margin: 0 auto;
+  }
+  .h-line {
+    height: 1px; background: linear-gradient(to right, transparent 5%, var(--gold) 20%, var(--gold) 80%, transparent 95%);
+    width: 80%; position: absolute; top: 0;
+  }
+
+  .area-col {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    position: relative;
+  }
+
+  .area-stem {
+    width: 1px; height: 36px;
+    background: linear-gradient(to bottom, var(--gold), rgba(201,168,76,.3));
+  }
+
+  /* Color accents per area */
+  .area--admin .node-box   { border-color: #7ab4d4; }
+  .area--admin .node-title { color: #7ab4d4; }
+  .area--admin .node-icon  { filter: drop-shadow(0 0 8px rgba(122,180,212,.5)); }
+
+  .area--fin .node-box   { border-color: #84c99e; }
+  .area--fin .node-title { color: #84c99e; }
+  .area--fin .node-icon  { filter: drop-shadow(0 0 8px rgba(132,201,158,.5)); }
+
+  .area--rrhh .node-box   { border-color: #d4a47a; }
+  .area--rrhh .node-title { color: #d4a47a; }
+  .area--rrhh .node-icon  { filter: drop-shadow(0 0 8px rgba(212,164,122,.5)); }
+
+  .area--ventas .node-box   { border-color: #c97ab4; }
+  .area--ventas .node-title { color: #c97ab4; }
+  .area--ventas .node-icon  { filter: drop-shadow(0 0 8px rgba(201,122,180,.5)); }
+
+  /* ── Badge ── */
+  .badge {
+    margin-top: 10px;
+    font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold-dim); text-align: center;
+  }
+
+  /* ── Legend ── */
+  .legend {
+    margin-top: 52px; position: relative; z-index: 1;
+    display: flex; gap: 28px; flex-wrap: wrap; justify-content: center;
+    animation: fadeUp .7s .6s ease both; opacity: 0; animation-fill-mode: both;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--cream-dim);
+  }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* ── Footer ── */
+  footer {
+    margin-top: 48px; font-size: 10px; letter-spacing: 3px;
+    color: var(--gold-dim); text-transform: uppercase;
+    position: relative; z-index: 1;
+    animation: fadeUp .7s .8s ease both; opacity: 0; animation-fill-mode: both;
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .areas-row { flex-direction: column; align-items: center; gap: 0; }
+    .area-col { width: 100%; max-width: 280px; }
+    .h-line { display: none; }
+    .area-stem { height: 24px; }
+    .node--ceo .node-box { padding: 18px 32px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-rule">
+    <span></span>
+    <div class="company-label">Estructura Organizacional</div>
+    <span></span>
+  </div>
+  <h1>Radice <strong>S.A.</strong></h1>
+  <p class="subtitle">Organigrama Corporativo &nbsp;·&nbsp; Jerarquía General</p>
+</header>
+
+<div class="chart">
+
+  <!-- GERENTE GENERAL -->
+  <div class="node node--ceo" style="animation-delay:.1s">
+    <div class="node-box">
+      <span class="node-icon">◆</span>
+      <div class="node-title">Nivel Directivo</div>
+      <div class="node-name">Gerente General</div>
+      <div class="node-desc">Dirección estratégica &amp; representación legal</div>
+    </div>
+  </div>
+
+  <!-- vertical stem -->
+  <div class="connector-v"></div>
+
+  <!-- horizontal bridge -->
+  <div class="h-line-wrap" style="height:1px; margin-bottom: 0;">
+    <div class="h-line"></div>
+  </div>
+
+  <!-- AREAS ROW -->
+  <div class="areas-row">
+
+    <!-- Administración -->
+    <div class="area-col area--admin">
+      <div class="area-stem"></div>
+      <div class="node" style="animation-delay:.35s">
+        <div class="node-box">
+          <span class="node-icon">⬡</span>
+          <div class="node-title">Área</div>
+          <div class="node-name">Administración</div>
+          <div class="node-desc">Gestión &amp; operaciones</div>
+        </div>
+        <div class="badge">ADM</div>
+      </div>
+    </div>
+
+    <!-- Finanzas -->
+    <div class="area-col area--fin">
+      <div class="area-stem"></div>
+      <div class="node" style="animation-delay:.45s">
+        <div class="node-box">
+          <span class="node-icon">⬡</span>
+          <div class="node-title">Área</div>
+          <div class="node-name">Finanzas</div>
+          <div class="node-desc">Contabilidad &amp; presupuesto</div>
+        </div>
+        <div class="badge">FIN</div>
+      </div>
+    </div>
+
+    <!-- RRHH -->
+    <div class="area-col area--rrhh">
+      <div class="area-stem"></div>
+      <div class="node" style="animation-delay:.55s">
+        <div class="node-box">
+          <span class="node-icon">⬡</span>
+          <div class="node-title">Área</div>
+          <div class="node-name">Recursos Humanos</div>
+          <div class="node-desc">Talento &amp; bienestar</div>
+        </div>
+        <div class="badge">RRHH</div>
+      </div>
+    </div>
+
+    <!-- Ventas -->
+    <div class="area-col area--ventas">
+      <div class="area-stem"></div>
+      <div class="node" style="animation-delay:.65s">
+        <div class="node-box">
+          <span class="node-icon">⬡</span>
+          <div class="node-title">Área</div>
+          <div class="node-name">Ventas</div>
+          <div class="node-desc">Comercial &amp; clientes</div>
+        </div>
+        <div class="badge">VNT</div>
+      </div>
+    </div>
+
+  </div><!-- /areas-row -->
+</div><!-- /chart -->
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#c9a84c;box-shadow:0 0 6px #c9a84c"></div> Nivel Directivo</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#7ab4d4"></div> Administración</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#84c99e"></div> Finanzas</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#d4a47a"></div> Recursos Humanos</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#c97ab4"></div> Ventas</div>
+</div>
+
+<footer>Radice S.A. &nbsp;·&nbsp; Organigrama Funcional &nbsp;·&nbsp; Nivel Único de Reporte</footer>
+
+</body>
+</html>
